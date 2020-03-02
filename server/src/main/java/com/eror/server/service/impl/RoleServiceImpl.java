@@ -1,6 +1,8 @@
 package com.eror.server.service.impl;
 
 
+import com.eror.server.dto.RoleDTO;
+import com.eror.server.mappers.RoleMapper;
 import com.eror.server.model.Role;
 import com.eror.server.repository.RoleRepository;
 import com.eror.server.service.RoleService;
@@ -14,6 +16,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     RoleRepository roleRepository;
+    @Autowired
+    RoleMapper roleMapper;
 
     @Override
     public Role save(Role entity) {
@@ -47,6 +51,13 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<Role> findAll() {
+
         return roleRepository.findAll();
+    }
+
+    @Override
+    public List<RoleDTO> findAllRolesDTO() {
+
+        return roleMapper.listRoleDTOs(roleRepository.findAll());
     }
 }

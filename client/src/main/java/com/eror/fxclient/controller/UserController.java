@@ -203,7 +203,7 @@ public class UserController implements Initializable {
                     String msg = saveUser(user);
                     assert msg != null;
                     saveAlert(msg);
-//        			User newUser = userService.save(user);
+
 
                 }
 
@@ -272,9 +272,43 @@ public class UserController implements Initializable {
         alert.setContentText("Are you sure you want to delete selected?");
         Optional<ButtonType> action = alert.showAndWait();
 
-//		if(action.get() == ButtonType.OK) userService.deleteInBatch(users);
+		if(action.get() == ButtonType.OK) userDelete(users);
 
         loadUserDetails();
+    }
+
+    private void userDelete(List<User> users) {
+        try {
+            String url = "http://localhost:8082/api/auth/signup";
+            RestTemplate restTemplate = new RestTemplate();
+// create headers
+            HttpHeaders headers = new HttpHeaders();
+// set `content-type` header
+            headers.setContentType(MediaType.APPLICATION_JSON);
+// set `accept` header
+            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+            headers.setBearerAuth(tokenWithBearer);
+// request body parameters
+
+// build the request
+            HttpEntity<List<User>> entity = new HttpEntity<>(users, headers);
+// send POST request
+            ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
+            String msg = new String();
+// check response
+            if (response.getStatusCode() == HttpStatus.OK) {
+                System.out.println("Request Successful");
+                System.out.println(response.getBody());
+                msg = response.getBody();
+
+            } else {
+                System.out.println("Request Failed");
+                System.out.println(response.getStatusCode());
+            }
+        } catch (Exception ex) {
+            System.out.println("Request Failed");
+            System.out.println(ex);
+        }
     }
 
     private void clearFields() {

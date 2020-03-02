@@ -36,7 +36,7 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-
+    // Method for saving User
     @PostMapping(value = "saveUser")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> saveUser(@RequestBody User user) {
