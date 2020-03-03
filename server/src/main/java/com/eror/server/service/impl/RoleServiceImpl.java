@@ -31,7 +31,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void delete(Role entity) {
-
+        roleRepository.delete(entity);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role find(Long id) {
-        return null;
+        return roleRepository.findRoleById(id);
     }
 
     @Override
