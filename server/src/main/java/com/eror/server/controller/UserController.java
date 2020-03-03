@@ -1,5 +1,7 @@
 package com.eror.server.controller;
 
+import com.eror.server.dto.UserDTO;
+import com.eror.server.mappers.UserMapper;
 import com.eror.server.model.User;
 import com.eror.server.service.UserService;
 import org.slf4j.LoggerFactory;
@@ -11,39 +13,41 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user/")
 public class UserController {
     private final org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
     private final UserService userService;
+    private final UserMapper userMapper;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserMapper userMapper) {
         this.userService = userService;
+        this.userMapper = userMapper;
     }
 
 
-    @GetMapping("getUser")
-    public ResponseEntity<User> getUser() {
+    @PostMapping("getUser")
+    public ResponseEntity<UserDTO> getUser(@RequestBody User user) {
         try {
-            User user = new User();
-            user.setName("Marko");
-            user.setUsername("eror");
-            user.setPassword("Eror");
+            Long id = user.getId();
+            UserDTO userDTO = userService.findById(id);
+
             logger.debug("User details retrieved.");
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            return new ResponseEntity<>(userDTO, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error while retrieving User details");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
     // Method for saving User
     @PostMapping(value = "saveUser")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> saveUser(@RequestBody User user) {
+    public ResponseEntity<UserDTO> saveUser(@RequestBody UserDTO userDTO) {
         try {
-            userService.save(user);
+            UserDTO userDto = userService.save(userDTO);
             logger.debug("User saved.");
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            return new ResponseEntity<>(userDto, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error while retrieving User details");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
