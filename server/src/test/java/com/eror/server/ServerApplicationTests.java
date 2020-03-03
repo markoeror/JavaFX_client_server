@@ -2,6 +2,7 @@ package com.eror.server;
 
 import com.eror.server.dto.RoleDTO;
 import com.eror.server.mappers.RoleMapper;
+import com.eror.server.mappers.TestMapper;
 import com.eror.server.model.Role;
 import com.eror.server.model.User;
 import com.eror.server.service.RoleService;
@@ -23,6 +24,7 @@ class ServerApplicationTests {
     UserService userService;
     @Autowired
     RoleMapper roleMapper;
+
 
     @Test
     void contextLoads() {
@@ -49,9 +51,9 @@ class ServerApplicationTests {
 
         Role roleEntity = roleService.find((long) 1);
 
-//        RoleDTO roleDTO = roleMapper.testDto(roleEntity);
+        RoleDTO roleDTO = roleMapper.roletoRoleDTO(roleEntity);
 //
-//        assertEquals(roleDTO.getId(), roleEntity.getId());
+        assertEquals(roleDTO.getId(), roleEntity.getId());
 //        assertEquals(roleDTO.getName(), roleEntity.getName());
     }
 
