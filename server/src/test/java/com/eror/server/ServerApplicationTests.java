@@ -42,6 +42,7 @@ class ServerApplicationTests {
     private void getUser(Integer id) {
         UserDTO user = userService.findById((long) id);
         Assertions.assertNotNull(user);
+
     }
 
     private void getUsers() {

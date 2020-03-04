@@ -40,6 +40,7 @@ public class UserController implements Initializable {
     private String auth;
     private String bearer;
     private String tokenWithBearer;
+    private List<User> users = new ArrayList<>();
 
     @FXML
     private Button company;
@@ -136,10 +137,6 @@ public class UserController implements Initializable {
     private TableColumn<User, String> colFirstName;
     @FXML
     private TableColumn<User, String> colLastName;
-    @FXML
-    private TableColumn<User, LocalDate> colDOB;
-    @FXML
-    private TableColumn<User, String> colGender;
     @FXML
     private TableColumn<User, String> colRole;
     @FXML
@@ -288,28 +285,22 @@ public class UserController implements Initializable {
                     User[].class,
                     1
             );
-
             if (response.getStatusCode() == HttpStatus.OK) {
                 System.out.println("Request Successful");
                 System.out.println(response.getBody());
-                List<User> users = Arrays.asList(response.getBody());
+                users = Arrays.asList(response.getBody());
                 users.forEach(role -> System.out.println(role.toString()));
                 assert users != null;
-
                 userList.addAll(users);
                 assert userList != null;
-
             } else {
                 System.out.println("Request Get Users Failed");
                 System.out.println(response.getStatusCode());
-
             }
-
         } catch (Exception ex) {
             System.out.println("Request Get Users Failed");
             System.out.println(ex);
         }
-
     }
 
     private void setRoles() {
@@ -319,7 +310,6 @@ public class UserController implements Initializable {
             HttpHeaders headers = new HttpHeaders();
             headers.setBearerAuth(tokenWithBearer);
             HttpEntity request = new HttpEntity(headers);
-
             ResponseEntity<Role[]> response = restTemplate.exchange(
                     url,
                     HttpMethod.GET,
@@ -327,7 +317,6 @@ public class UserController implements Initializable {
                     Role[].class,
                     1
             );
-
             if (response.getStatusCode() == HttpStatus.OK) {
                 System.out.println("Request Successful");
                 System.out.println(response.getBody());
@@ -336,7 +325,6 @@ public class UserController implements Initializable {
                 assert roleList != null;
                 roles.addAll(roleList);
                 assert roles != null;
-
             } else {
                 System.out.println("Request Failed");
                 System.out.println(response.getStatusCode());
@@ -562,8 +550,8 @@ public class UserController implements Initializable {
 
 
         colUserId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colFirstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-        colLastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        colFirstName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colLastName.setCellValueFactory(new PropertyValueFactory<>("surname"));
         colRole.setCellValueFactory(new PropertyValueFactory<>("role"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         colEdit.setCellFactory(cellFactory);
@@ -574,7 +562,7 @@ public class UserController implements Initializable {
      */
     private void loadUserDetails() {
         userList.clear();
-//		userList.addAll(userService.findAll());
+        userList.addAll(users);
         userTable.setItems(userList);
     }
 
