@@ -7,7 +7,7 @@ import com.eror.server.model.Role;
 
 import java.util.List;
 
-public interface RoleService extends GenericService<Role> {
+public interface RoleService extends GenericService<Role, RoleDTO> {
 
     List<RoleDTO> findAllRolesDTO();
 }

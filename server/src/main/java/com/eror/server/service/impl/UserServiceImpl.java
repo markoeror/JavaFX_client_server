@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -20,46 +21,47 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
-    public User save(User entity) {
-        return userRepository.save(entity);
+    public UserDTO save(User entity) {
+        return userMapper.userToUserDTO(userRepository.save(entity));
     }
 
     @Override
-    public User update(User entity) {
-        return userRepository.save(entity);
+    public UserDTO update(User entity) {
+        return userMapper.userToUserDTO(userRepository.save(entity));
     }
 
-	@Override
-	public void delete(User entity) {
-		userRepository.delete(entity);
-	}
+    @Override
+    public void delete(User entity) {
+        userRepository.delete(entity);
+    }
 
-	@Override
-	public void delete(Long id) {
-		userRepository.deleteById(id);
-	}
+    @Override
+    public void delete(Long id) {
+        userRepository.deleteById(id);
+    }
 
-	@Override
-	public User find(Long id) {
-		return userRepository.findUserById(id);
-	}
+    @Override
+    public UserDTO find(Long id) {
+        return userMapper.userToUserDTO(userRepository.findUserById(id));
+    }
 
-	@Override
-	public List<User> findAll() {
+    @Override
+    public List<UserDTO> findAll() {
 
-		return userRepository.findAll();
-	}
+        return userMapper.listUsersToUsersDTO(userRepository.findAll());
+    }
 
-	@Override
-	public boolean authenticate(String username, String password) {
-		User user = this.findByEmail(username);
-		if (user == null) {
-			return false;
-		} else {
+    @Override
+    public boolean authenticate(String username, String password) {
+        User user = this.findByEmail(username);
+        if (user == null) {
+            return false;
+        } else {
             if (password.equals(user.getPassword())) return true;
             else return false;
         }
     }
+
 
     @Override
     public User findByEmail(String email) {
@@ -76,7 +78,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO findById(Long id) {
-        return userMapper.userToUserDTO(userRepository.findUserById(id));
+        UserDTO userDTO = userMapper.userToUserDTO(userRepository.findUserById(id));
+        return userDTO;
+    }
+
+    @Override
+    public List<UserDTO> findAllUsers() {
+        List<User> userList = userRepository.findAllUsers();
+        List<UserDTO> userDTOS = userMapper.listUsersToUsersDTO(userList);
+        return userDTOS;
     }
 
     @Override

@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 @Controller
 public class UserController implements Initializable {
     private Map authMap;
+    private String username;
     private String token;
     private String auth;
     private String bearer;
@@ -209,7 +210,7 @@ public class UserController implements Initializable {
                 assert updatedUser != null;
                 updateAlert(updatedUser);
             }
-//    		setUsersName();
+            setUsersName();
             clearFields();
             loadUserDetails();
         }
@@ -222,8 +223,9 @@ public class UserController implements Initializable {
         setAuthMap(stageManager.getUser());
 
         setAuthorisation();
+        getUsers();
         setRoles();
-//		setUsersName();
+        setUsersName();
 //		roles.addAll(roleService.findAll());
 //		List<Company> companies=companyService.findAll();
         cbRole.setItems(roles);
@@ -271,14 +273,51 @@ public class UserController implements Initializable {
         }
     }
 
+    private void getUsers() {
+        try {
+            String url = "http://localhost:8082/api/user/getUsers";
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(tokenWithBearer);
+            HttpEntity request = new HttpEntity(headers);
+
+            ResponseEntity<User[]> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    request,
+                    User[].class,
+                    1
+            );
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                System.out.println("Request Successful");
+                System.out.println(response.getBody());
+                List<User> users = Arrays.asList(response.getBody());
+                users.forEach(role -> System.out.println(role.toString()));
+                assert users != null;
+
+                userList.addAll(users);
+                assert userList != null;
+
+            } else {
+                System.out.println("Request Get Users Failed");
+                System.out.println(response.getStatusCode());
+
+            }
+
+        } catch (Exception ex) {
+            System.out.println("Request Get Users Failed");
+            System.out.println(ex);
+        }
+
+    }
+
     private void setRoles() {
         try {
             String url = "http://localhost:8082/api/role/getRoles";
             RestTemplate restTemplate = new RestTemplate();
-
             HttpHeaders headers = new HttpHeaders();
             headers.setBearerAuth(tokenWithBearer);
-
             HttpEntity request = new HttpEntity(headers);
 
             ResponseEntity<Role[]> response = restTemplate.exchange(
@@ -305,7 +344,7 @@ public class UserController implements Initializable {
             }
 
         } catch (Exception ex) {
-            System.out.println("Request Failed");
+            System.out.println("Request Get Roles Failed");
             System.out.println(ex);
         }
 
@@ -472,8 +511,8 @@ public class UserController implements Initializable {
     private void setAuthorisation() {
         Map jsonMap = authMap;
         System.out.println(jsonMap);
-        String usernameJson = jsonMap.get("username").toString();
-        System.out.println("username is: " + usernameJson);
+        username = jsonMap.get("username").toString();
+        System.out.println("username is: " + username);
         String bearer = jsonMap.get("tokenType").toString();
         token = jsonMap.get("accessToken").toString();
         tokenWithBearer = bearer + " " + token;
@@ -484,9 +523,9 @@ public class UserController implements Initializable {
         System.out.println("Authority is: " + auth);
     }
 
-//	private void setUsersName() {
-//		usersName.setText(getUser().getFirstName()+" "+getUser().getLastName());
-//	}
+    private void setUsersName() {
+        usersName.setText(username);
+    }
 
     private void setAuthMap(Map user) {
         System.out.println(user.toString());
@@ -525,8 +564,6 @@ public class UserController implements Initializable {
         colUserId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colFirstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));
         colLastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-        colDOB.setCellValueFactory(new PropertyValueFactory<>("dob"));
-        colGender.setCellValueFactory(new PropertyValueFactory<>("gender"));
         colRole.setCellValueFactory(new PropertyValueFactory<>("role"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         colEdit.setCellFactory(cellFactory);

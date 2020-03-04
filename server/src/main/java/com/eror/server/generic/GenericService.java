@@ -2,11 +2,11 @@ package com.eror.server.generic;
 
 import java.util.List;
 
-public interface GenericService<T extends Object> {
+public interface GenericService<T, V extends Object> {
 
-    T save(T entity);
+    V save(T entity);
 
-    T update(T entity);
+    V update(T entity);
 
     void delete(T entity);
 
@@ -14,7 +14,7 @@ public interface GenericService<T extends Object> {
 
     void deleteInBatch(List<T> entities);
 
-    T find(Long id);
+    V find(Long id);
 
-    List<T> findAll();
+    List<V> findAll();
 }

@@ -33,40 +33,35 @@ class ServerApplicationTests {
 
     @Test
     void contextLoads() {
-
-        checkUsers();
+        getUser(1);
+        getUsers();
         checkROle();
 
     }
 
-    private void checkUsers() {
-        List<User> users = userService.findAll();
+    private void getUser(Integer id) {
+        UserDTO user = userService.findById((long) id);
+        Assertions.assertNotNull(user);
+    }
 
-        Assertions.assertNotNull(users);
-        assert users.get(0).getName().equals("admin");
-        Set<User> userSet = new HashSet<>(users);
-        List<UserDTO> userDTOList = userMapper.listUsersToUsersDTO(userSet);
-        Assertions.assertNotNull(userDTOList);
-        assert userDTOList.get(0).getName().equals("admin");
+    private void getUsers() {
+        List<UserDTO> usersDtos = userService.findAll();
+        Assertions.assertNotNull(usersDtos);
+        assert usersDtos.get(0).getName().equals("admin");
 
     }
 
 
     private void checkROle() {
-        List<Role> roleList = roleService.findAll();
-        Assertions.assertNotNull(roleList);
-        assert roleList.size() == 2;
-        assert roleList.get(0).getId() == (1);
-        assert roleList.get(1).getId() == (2);
-        Role roleEntity = roleService.find((long) 1);
-        Assertions.assertNotNull(roleEntity);
-        RoleDTO roleDTO = roleMapper.roletoRoleDTO(roleEntity);
+        List<RoleDTO> roleListDto = roleService.findAll();
+        Assertions.assertNotNull(roleListDto);
+        assert roleListDto.size() == 2;
+        assert roleListDto.get(0).getId() == (1);
+        assert roleListDto.get(1).getId() == (2);
+        RoleDTO roleDTO = roleService.find((long) 1);
         Assertions.assertNotNull(roleDTO);
-        assertEquals(roleDTO.getId(), roleEntity.getId());
-        assertEquals(roleDTO.getRoleName(), roleEntity.getName());
-        List<RoleDTO> roleDTOS = roleMapper.listRoleDTOs(roleList);
-        Assertions.assertNotNull(roleDTOS);
-        assertEquals(roleDTOS.get(0).getRoleName(), roleList.get(0).getName());
+        Assertions.assertNotNull(roleListDto);
+
 
     }
 

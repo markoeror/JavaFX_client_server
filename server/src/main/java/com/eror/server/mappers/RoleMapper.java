@@ -12,7 +12,7 @@ import java.util.List;
 public interface RoleMapper {
 
     @Mapping(source = "role.name", target = "roleName")
-    RoleDTO roletoRoleDTO(Role role);
+    RoleDTO roleToRoleDTO(Role role);
 
 
     List<RoleDTO> listRoleDTOs(List<Role> setRoles);

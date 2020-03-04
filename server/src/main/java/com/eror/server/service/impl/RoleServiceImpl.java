@@ -20,13 +20,13 @@ public class RoleServiceImpl implements RoleService {
     RoleMapper roleMapper;
 
     @Override
-    public Role save(Role entity) {
-        return null;
+    public RoleDTO save(Role entity) {
+        return roleMapper.roleToRoleDTO(roleRepository.save(entity));
     }
 
     @Override
-    public Role update(Role entity) {
-        return null;
+    public RoleDTO update(Role entity) {
+        return roleMapper.roleToRoleDTO(roleRepository.save(entity));
     }
 
     @Override
@@ -45,14 +45,14 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role find(Long id) {
-        return roleRepository.findRoleById(id);
+    public RoleDTO find(Long id) {
+        return roleMapper.roleToRoleDTO(roleRepository.findRoleById(id));
     }
 
     @Override
-    public List<Role> findAll() {
+    public List<RoleDTO> findAll() {
 
-        return roleRepository.findAll();
+        return roleMapper.listRoleDTOs(roleRepository.findAll());
     }
 
     @Override

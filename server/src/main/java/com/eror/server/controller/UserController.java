@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/user/")
@@ -25,8 +27,23 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
+    // Method for retrieving User list
+    @GetMapping("getUsers")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<UserDTO>> getUsers() {
+        try {
+            List<UserDTO> userDTOList = userService.findAll();
+            logger.debug("Users list retrieved.");
+            return new ResponseEntity<>(userDTOList, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while retrieving Users list");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
+    // Method for retrieving specific User
     @PostMapping("getUser")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserDTO> getUser(@RequestBody User user) {
         try {
             Long id = user.getId();
@@ -49,7 +66,7 @@ public class UserController {
             logger.debug("User saved.");
             return new ResponseEntity<>(userDto, HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Error while retrieving User details");
+            logger.error("Error while saving User");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
