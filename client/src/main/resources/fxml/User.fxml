@@ -88,30 +88,30 @@
                         <Insets left="25.0" right="25.0"/>
                     </VBox.margin>
                 </TextField>
-                <DatePicker fx:id="dob" editable="false" prefHeight="30.0" prefWidth="245.0" promptText="Date of Birth">
-                    <VBox.margin>
-                        <Insets left="25.0"/>
-                    </VBox.margin>
-                </DatePicker>
-                <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="255.0" spacing="15.0">
-                    <children>
-                        <RadioButton fx:id="rbMale" mnemonicParsing="false" selected="true" text="Male"
-                                     textFill="WHITE">
-                            <toggleGroup>
-                                <ToggleGroup fx:id="gender"/>
-                            </toggleGroup>
-                        </RadioButton>
-                        <RadioButton fx:id="rbFemale" mnemonicParsing="false" text="Female" textFill="WHITE"
-                                     toggleGroup="$gender">
-                            <HBox.margin>
-                                <Insets left="10.0"/>
-                            </HBox.margin>
-                        </RadioButton>
-                    </children>
-                    <VBox.margin>
-                        <Insets left="25.0" right="25.0"/>
-                    </VBox.margin>
-                </HBox>
+                <!--                <DatePicker fx:id="dob" editable="false" prefHeight="30.0" prefWidth="245.0" promptText="Date of Birth">-->
+                <!--                    <VBox.margin>-->
+                <!--                        <Insets left="25.0"/>-->
+                <!--                    </VBox.margin>-->
+                <!--                </DatePicker>-->
+                <!--                <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="255.0" spacing="15.0">-->
+                <!--                    <children>-->
+                <!--                        <RadioButton fx:id="rbMale" mnemonicParsing="false" selected="true" text="Male"-->
+                <!--                                     textFill="WHITE">-->
+                <!--                            <toggleGroup>-->
+                <!--                                <ToggleGroup fx:id="gender"/>-->
+                <!--                            </toggleGroup>-->
+                <!--                        </RadioButton>-->
+                <!--                        <RadioButton fx:id="rbFemale" mnemonicParsing="false" text="Female" textFill="WHITE"-->
+                <!--                                     toggleGroup="$gender">-->
+                <!--                            <HBox.margin>-->
+                <!--                                <Insets left="10.0"/>-->
+                <!--                            </HBox.margin>-->
+                <!--                        </RadioButton>-->
+                <!--                    </children>-->
+                <!--                    <VBox.margin>-->
+                <!--                        <Insets left="25.0" right="25.0"/>-->
+                <!--                    </VBox.margin>-->
+                <!--                </HBox>-->
                 <ComboBox fx:id="cbRole" prefHeight="30.0" prefWidth="246.0" promptText="Select Role">
                     <VBox.margin>
                         <Insets left="25.0"/>

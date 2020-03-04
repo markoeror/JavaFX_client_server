@@ -1,6 +1,7 @@
 package com.eror.fxclient.controller;
 
 
+import com.eror.fxclient.ModelDTO.RoleList;
 import com.eror.fxclient.config.StageManager;
 import com.eror.fxclient.model.Role;
 import com.eror.fxclient.model.User;
@@ -147,18 +148,10 @@ public class UserController implements Initializable {
     @FXML
     private MenuItem deleteUsers;
 
-    //	@Autowired
-//	private UserService userService;
-//
-//	@Autowired
-//	private RoleService roleService;
-//	@Autowired
-//	private CompanyService companyService;
     @Lazy
     @Autowired
     private StageManager stageManager;
     private ObservableList<User> userList = FXCollections.observableArrayList();
-    //	private ObservableList<String> roles = FXCollections.observableArrayList("Admin", "User");
     private ObservableList<Role> roles = FXCollections.observableArrayList();
 
     @FXML
@@ -203,25 +196,118 @@ public class UserController implements Initializable {
                     String msg = saveUser(user);
                     assert msg != null;
                     saveAlert(msg);
-
-
                 }
-
             } else {
-//    			User user = userService.find(Long.parseLong(userId.getText()));
-//    			user.setFirstName(getFirstName());
-//    			user.setLastName(getLastName());
-//    			user.setDob(getDob());
-//    			user.setGender(getGender());
-//    			user.setRole(getRole());
-//    			User updatedUser =  userService.update(user);
-//    			updateAlert(updatedUser);
+                User user = new User();
+                user.setId(Long.parseLong(userId.getText()));
+                user.setName(getFirstName());
+                user.setSurname(getLastName());
+                user.setRole(getRole());
+                user.setEmail(getEmail());
+                user.setPassword(getPassword());
+                User updatedUser = updateUser(user);
+                assert updatedUser != null;
+                updateAlert(updatedUser);
             }
 //    		setUsersName();
             clearFields();
             loadUserDetails();
         }
 
+
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        setAuthMap(stageManager.getUser());
+
+        setAuthorisation();
+        setRoles();
+//		setUsersName();
+//		roles.addAll(roleService.findAll());
+//		List<Company> companies=companyService.findAll();
+        cbRole.setItems(roles);
+
+        userTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+        setColumnProperties();
+
+        // Add all users into table
+        loadUserDetails();
+    }
+
+    private User updateUser(User user) {
+        try {
+            String url = "http://localhost:8082/api/user/saveUser";
+            RestTemplate restTemplate = new RestTemplate();
+// create headers
+            HttpHeaders headers = new HttpHeaders();
+// set `content-type` header
+            headers.setContentType(MediaType.APPLICATION_JSON);
+// set `accept` header
+            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+            headers.setBearerAuth(tokenWithBearer);
+// request body parameters
+
+// build the request
+            HttpEntity<User> entity = new HttpEntity<>(user, headers);
+// send POST request
+            ResponseEntity<User> response = restTemplate.postForEntity(url, entity, User.class);
+            User savedUser = new User();
+// check response
+            if (response.getStatusCode() == HttpStatus.OK) {
+                System.out.println("Request Successful");
+                System.out.println(response.getBody());
+                savedUser = response.getBody();
+            } else {
+                System.out.println("Request Failed");
+                System.out.println(response.getStatusCode());
+            }
+            return savedUser;
+        } catch (Exception ex) {
+            System.out.println("Request Failed");
+            System.out.println(ex);
+            return null;
+        }
+    }
+
+    private void setRoles() {
+        try {
+            String url = "http://localhost:8082/api/role/getRoles";
+            RestTemplate restTemplate = new RestTemplate();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(tokenWithBearer);
+
+            HttpEntity request = new HttpEntity(headers);
+
+            ResponseEntity<Role[]> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    request,
+                    Role[].class,
+                    1
+            );
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                System.out.println("Request Successful");
+                System.out.println(response.getBody());
+                List<Role> roleList = Arrays.asList(response.getBody());
+                roleList.forEach(role -> System.out.println(role.toString()));
+                assert roleList != null;
+                roles.addAll(roleList);
+                assert roles != null;
+
+            } else {
+                System.out.println("Request Failed");
+                System.out.println(response.getStatusCode());
+
+            }
+
+        } catch (Exception ex) {
+            System.out.println("Request Failed");
+            System.out.println(ex);
+        }
 
     }
 
@@ -272,14 +358,14 @@ public class UserController implements Initializable {
         alert.setContentText("Are you sure you want to delete selected?");
         Optional<ButtonType> action = alert.showAndWait();
 
-		if(action.get() == ButtonType.OK) userDelete(users);
+        if (action.get() == ButtonType.OK) userDelete(users);
 
         loadUserDetails();
     }
 
     private void userDelete(List<User> users) {
         try {
-            String url = "http://localhost:8082/api/auth/signup";
+            String url = "http://localhost:8082/api/user/deleteUser";
             RestTemplate restTemplate = new RestTemplate();
 // create headers
             HttpHeaders headers = new HttpHeaders();
@@ -382,36 +468,20 @@ public class UserController implements Initializable {
         return password.getText();
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        setAuthMap(stageManager.getUser());
+
+    private void setAuthorisation() {
         Map jsonMap = authMap;
         System.out.println(jsonMap);
         String usernameJson = jsonMap.get("username").toString();
         System.out.println("username is: " + usernameJson);
         String bearer = jsonMap.get("tokenType").toString();
-        System.out.println(bearer);
         token = jsonMap.get("accessToken").toString();
-        System.out.println("Token is: " + token);
         tokenWithBearer = bearer + " " + token;
         System.out.println(tokenWithBearer);
         ArrayList authorityList = ((ArrayList) jsonMap.get("authorities"));
         Map authMap = (Map) authorityList.get(0);
         auth = (String) authMap.get("authority");
         System.out.println("Authority is: " + auth);
-
-
-//		setUsersName();
-//		roles.addAll(roleService.findAll());
-//		List<Company> companies=companyService.findAll();
-        cbRole.setItems(roles);
-
-        userTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-
-        setColumnProperties();
-
-        // Add all users into table
-        loadUserDetails();
     }
 
 //	private void setUsersName() {
@@ -511,11 +581,4 @@ public class UserController implements Initializable {
         alert.showAndWait();
     }
 
-//	public User getUser() {
-//		return user;
-//	}
-//
-//	public void setUser(User user) {
-//		this.user = user;
-//	}
 }

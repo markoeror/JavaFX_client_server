@@ -1,7 +1,10 @@
 package com.eror.server;
 
 import com.eror.server.dto.RoleDTO;
+import com.eror.server.dto.UserDTO;
 import com.eror.server.mappers.RoleMapper;
+import com.eror.server.mappers.TestMapper;
+import com.eror.server.mappers.UserMapper;
 import com.eror.server.model.Role;
 import com.eror.server.model.User;
 import com.eror.server.service.RoleService;
@@ -11,7 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -23,6 +28,8 @@ class ServerApplicationTests {
     UserService userService;
     @Autowired
     RoleMapper roleMapper;
+    @Autowired
+    UserMapper userMapper;
 
     @Test
     void contextLoads() {
@@ -37,6 +44,11 @@ class ServerApplicationTests {
 
         Assertions.assertNotNull(users);
         assert users.get(0).getName().equals("admin");
+        Set<User> userSet = new HashSet<>(users);
+        List<UserDTO> userDTOList = userMapper.listUsersToUsersDTO(userSet);
+        Assertions.assertNotNull(userDTOList);
+        assert userDTOList.get(0).getName().equals("admin");
+
     }
 
 
@@ -46,13 +58,16 @@ class ServerApplicationTests {
         assert roleList.size() == 2;
         assert roleList.get(0).getId() == (1);
         assert roleList.get(1).getId() == (2);
-
         Role roleEntity = roleService.find((long) 1);
+        Assertions.assertNotNull(roleEntity);
+        RoleDTO roleDTO = roleMapper.roletoRoleDTO(roleEntity);
+        Assertions.assertNotNull(roleDTO);
+        assertEquals(roleDTO.getId(), roleEntity.getId());
+        assertEquals(roleDTO.getRoleName(), roleEntity.getName());
+        List<RoleDTO> roleDTOS = roleMapper.listRoleDTOs(roleList);
+        Assertions.assertNotNull(roleDTOS);
+        assertEquals(roleDTOS.get(0).getRoleName(), roleList.get(0).getName());
 
-//        RoleDTO roleDTO = roleMapper.testDto(roleEntity);
-//
-//        assertEquals(roleDTO.getId(), roleEntity.getId());
-//        assertEquals(roleDTO.getName(), roleEntity.getName());
     }
 
 }

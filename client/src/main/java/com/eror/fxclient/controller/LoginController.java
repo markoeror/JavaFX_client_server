@@ -50,7 +50,9 @@ public class LoginController implements Initializable {
 
     @FXML
     private void login(ActionEvent event) throws IOException {
-        User user = new User(getUsername(), getPassword());
+        User user = new User();
+        user.setUsername(getUsername());
+        user.setPassword(getPassword());
 //        User dummyuserFromApi= getDummyUser();
         getTokenAuthorisation(getUsername(), getPassword());
 
