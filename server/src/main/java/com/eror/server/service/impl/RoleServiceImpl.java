@@ -40,8 +40,9 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void deleteInBatch(List<Role> entities) {
+    public List<RoleDTO> deleteInBatch(List<RoleDTO> roleDTOS) {
 
+        return null;
     }
 
     @Override

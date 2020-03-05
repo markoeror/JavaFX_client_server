@@ -2,6 +2,8 @@ package com.eror.fxclient;
 
 import com.codesnippets4all.json.parsers.JSONParser;
 import com.codesnippets4all.json.parsers.JsonParserFactory;
+import com.eror.fxclient.enums.RoleName;
+import com.eror.fxclient.model.Role;
 import com.eror.fxclient.model.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,7 @@ class FxclientApplicationTests {
         Assertions.assertNotNull(token);
         User user = getUser();
         updateUser(user);
+        saveUser();
     }
 
 
@@ -54,6 +57,32 @@ class FxclientApplicationTests {
         return tokenWithBearer;
     }
 
+    private void saveUser() {
+        String url = "http://localhost:8082/api/user/saveUser";
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.setBearerAuth(token);
+        User user = new User();
+        Role role = new Role();
+
+        role.setRoleName(RoleName.ROLE_USER);
+        user.setRole(role);
+        user.setEmail("testifsdfc1");
+        user.setPassword("testicccsdcsccc");
+        user.setName("testic");
+        user.setSurname("testic");
+        user.setUsername("tescdsticccc");
+        HttpEntity<User> entity = new HttpEntity<>(user, headers);
+// send POST request
+        ResponseEntity<User> response = restTemplate.postForEntity(url, entity, User.class);
+        HttpStatus status = response.getStatusCode();
+        assert status.equals(HttpStatus.OK);
+        Assertions.assertNotNull(response.getBody());
+    }
+
     private User getUser() {
         String url = "http://localhost:8082/api/user/getUser";
         RestTemplate restTemplate = new RestTemplate();
@@ -62,10 +91,11 @@ class FxclientApplicationTests {
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.setBearerAuth(token);
         User user = new User();
-        user.setId(7);
+        user.setId(3);
         HttpEntity<User> entity = new HttpEntity<>(user, headers);
         ResponseEntity<User> response = restTemplate.postForEntity(url, entity, User.class);
         User user1 = response.getBody();
+        Assertions.assertNotNull(user1);
         return user1;
     }
 

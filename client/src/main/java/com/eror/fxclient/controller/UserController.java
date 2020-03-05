@@ -194,6 +194,7 @@ public class UserController implements Initializable {
                     String msg = saveUser(user);
                     assert msg != null;
                     saveAlert(msg);
+
                 }
             } else {
                 User user = new User();
@@ -207,6 +208,7 @@ public class UserController implements Initializable {
                 assert updatedUser != null;
                 updateAlert(updatedUser);
             }
+            getUsers();
             setUsersName();
             clearFields();
             loadUserDetails();
@@ -390,9 +392,9 @@ public class UserController implements Initializable {
         loadUserDetails();
     }
 
-    private void userDelete(List<User> users) {
+    private void userDelete(List<User> usersForDelete) {
         try {
-            String url = "http://localhost:8082/api/user/deleteUser";
+            String url = "http://localhost:8082/api/user/deleteUsers";
             RestTemplate restTemplate = new RestTemplate();
 // create headers
             HttpHeaders headers = new HttpHeaders();
@@ -404,22 +406,23 @@ public class UserController implements Initializable {
 // request body parameters
 
 // build the request
-            HttpEntity<List<User>> entity = new HttpEntity<>(users, headers);
+            HttpEntity<List<User>> entity = new HttpEntity<>(usersForDelete, headers);
 // send POST request
-            ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
-            String msg = new String();
+            ResponseEntity<User[]> response = restTemplate.postForEntity(url, entity, User[].class);
 // check response
             if (response.getStatusCode() == HttpStatus.OK) {
                 System.out.println("Request Successful");
                 System.out.println(response.getBody());
-                msg = response.getBody();
+                users = Arrays.asList(response.getBody());
+                users.forEach(role -> System.out.println(role.toString()));
+                assert users != null;
 
             } else {
-                System.out.println("Request Failed");
+                System.out.println("Request Get Users Failed");
                 System.out.println(response.getStatusCode());
             }
         } catch (Exception ex) {
-            System.out.println("Request Failed");
+            System.out.println("Request Get Users Failed");
             System.out.println(ex);
         }
     }
@@ -428,9 +431,6 @@ public class UserController implements Initializable {
         userId.setText(null);
         firstName.clear();
         lastName.clear();
-        dob.getEditor().clear();
-        rbMale.setSelected(true);
-        rbFemale.setSelected(false);
         cbRole.getSelectionModel().clearSelection();
         email.clear();
         password.clear();

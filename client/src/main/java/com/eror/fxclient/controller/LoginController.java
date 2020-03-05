@@ -9,10 +9,7 @@ import com.eror.fxclient.view.FxmlView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -120,6 +117,13 @@ public class LoginController implements Initializable {
         } catch (Exception ex) {
             System.out.println("Request Failed");
             System.out.println(ex);
+            System.out.println(ex.getMessage());
+            String msg = ex.getMessage();
+            Boolean is401 = msg.contains("401");
+            if (is401) {
+                badLoginAlert("Pogresan username ili password!");
+            }
+
             return null;
         }
     }
@@ -158,4 +162,12 @@ public class LoginController implements Initializable {
 
     }
 
+    private void badLoginAlert(String msg) {
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Error while logging in.");
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
+    }
 }

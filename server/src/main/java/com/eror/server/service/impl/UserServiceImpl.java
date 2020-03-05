@@ -70,7 +70,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO save(UserDTO userDTO) {
-
         UserDTO userDTOSaved = userMapper.userToUserDTO(userMapper.userDTOToUser(userDTO));
         assert userDTOSaved != null;
         return userDTOSaved;
@@ -90,8 +89,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteInBatch(List<User> users) {
-        userRepository.deleteInBatch(users);
+    public List<UserDTO> deleteInBatch(List<UserDTO> usersDTO) {
+        userRepository.deleteInBatch(userMapper.listUsersDTOToUsers(usersDTO));
+
+        return findAllUsers();
     }
 
 }

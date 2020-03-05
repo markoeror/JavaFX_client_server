@@ -12,7 +12,7 @@ public interface GenericService<T, V extends Object> {
 
     void delete(Long id);
 
-    void deleteInBatch(List<T> entities);
+    List<V> deleteInBatch(List<V> entities);
 
     V find(Long id);
 

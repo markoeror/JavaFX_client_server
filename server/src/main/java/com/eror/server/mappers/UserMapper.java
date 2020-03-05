@@ -12,6 +12,7 @@ import org.mapstruct.Named;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -35,14 +36,24 @@ public interface UserMapper {
         if (!roleList.isEmpty()) {
             role = roleList.get(0);
         }
-        RoleMapper roleMapper;
-
-        RoleDTO roleDTO = roleToRoleDTO(role);
-        return roleDTO;
-
+        return roleToRoleDTO(role);
     }
 
+    @Mapping(source = "userDTO", target = "roles", qualifiedByName = "rolesUser")
     User userDTOToUser(UserDTO userDTO);
+
+
+    @Mapping(source = "roleName", target = "name")
+    Role roleDTOtoRole(RoleDTO roleDTO);
+
+    @Named("rolesUser")
+    default Set<Role> userDTOToUserRoles(UserDTO userDTO) {
+        RoleDTO roleDTO = userDTO.getRole();
+        Role role = roleDTOtoRole(roleDTO);
+        Set<Role> roleSet = new HashSet<>();
+        roleSet.add(role);
+        return roleSet;
+    }
 
     List<UserDTO> listUsersToUsersDTO(List<User> listUsers);
 

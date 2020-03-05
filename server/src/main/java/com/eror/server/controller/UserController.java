@@ -70,4 +70,18 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    // Method for saving User
+    @PostMapping(value = "deleteUsers")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<UserDTO>> deleteUsers(@RequestBody List<UserDTO> usersDTO) {
+        try {
+            List<UserDTO> userDTOList = userService.deleteInBatch(usersDTO);
+            logger.debug("Users deleted.");
+            return new ResponseEntity<>(userDTOList, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while deleting Users");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }
