@@ -181,6 +181,21 @@
                             </effect>
                         </Button>
                     </children>
+                    <children>
+                        <Button fx:id="btnMenu" mnemonicParsing="false" onAction="#backToManu" prefHeight="22.0"
+                                prefWidth="70.0" styleClass="background" text="Menu page" textFill="#fff9f9"
+                                textOverrun="CLIP">
+                            <font>
+                                <Font size="14.0"/>
+                            </font>
+                            <HBox.margin>
+                                <Insets right="5.0" top="5.0"/>
+                            </HBox.margin>
+                            <effect>
+                                <DropShadow blurType="ONE_PASS_BOX" color="#00000091"/>
+                            </effect>
+                        </Button>
+                    </children>
                 </HBox>
                 <TableView fx:id="userTable" prefHeight="300.0" prefWidth="679.0" tableMenuButtonVisible="true">
                     <columns>

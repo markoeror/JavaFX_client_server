@@ -1,7 +1,6 @@
 package com.eror.fxclient.controller;
 
 
-import com.eror.fxclient.ModelDTO.RoleList;
 import com.eror.fxclient.config.StageManager;
 import com.eror.fxclient.model.Role;
 import com.eror.fxclient.model.User;
@@ -47,6 +46,9 @@ public class UserController implements Initializable {
 
     @FXML
     private Button btnLogout;
+
+    @FXML
+    private Button btnMenu;
 
     @FXML
     private Label userId;
@@ -149,6 +151,7 @@ public class UserController implements Initializable {
     @Lazy
     @Autowired
     private StageManager stageManager;
+
     private ObservableList<User> userList = FXCollections.observableArrayList();
     private ObservableList<Role> roles = FXCollections.observableArrayList();
 
@@ -163,6 +166,11 @@ public class UserController implements Initializable {
     @FXML
     private void logout(ActionEvent event) throws IOException {
         stageManager.switchScene(FxmlView.LOGIN);
+    }
+
+    @FXML
+    private void backToManu(ActionEvent event) throws IOException {
+        stageManager.switchScene(FxmlView.MENU);
     }
 
     @FXML

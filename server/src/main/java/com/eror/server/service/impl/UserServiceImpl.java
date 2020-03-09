@@ -9,8 +9,8 @@ import com.eror.server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -70,29 +70,54 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO save(UserDTO userDTO) {
-        UserDTO userDTOSaved = userMapper.userToUserDTO(userMapper.userDTOToUser(userDTO));
-        assert userDTOSaved != null;
+        UserDTO userDTOSaved;
+        try {
+            userDTOSaved = userMapper.userToUserDTO(userMapper.userDTOToUser(userDTO));
+            assert userDTOSaved != null;
+        } catch (Exception e) {
+            throw new EntityNotFoundException("Exception while saving user .");
+        }
         return userDTOSaved;
     }
 
     @Override
     public UserDTO findById(Long id) {
-        UserDTO userDTO = userMapper.userToUserDTO(userRepository.findUserById(id));
+        UserDTO userDTO;
+        try {
+            userDTO = userMapper.userToUserDTO(userRepository.findUserById(id));
+        } catch (Exception e) {
+            throw new EntityNotFoundException("Exception while retrieving user .");
+        }
+
         return userDTO;
     }
 
     @Override
     public List<UserDTO> findAllUsers() {
-        List<User> userList = userRepository.findAllUsers();
-        List<UserDTO> userDTOS = userMapper.listUsersToUsersDTO(userList);
+        List<UserDTO> userDTOS;
+        try {
+            userDTOS = userMapper.listUsersToUsersDTO(userRepository.findAllUsers());
+        } catch (Exception e) {
+            throw new EntityNotFoundException("Exception while retrieving users .");
+        }
         return userDTOS;
     }
 
     @Override
     public List<UserDTO> deleteInBatch(List<UserDTO> usersDTO) {
-        userRepository.deleteInBatch(userMapper.listUsersDTOToUsers(usersDTO));
+        try {
+            userRepository.deleteInBatch(userMapper.listUsersDTOToUsers(usersDTO));
+        } catch (Exception e) {
+            throw new EntityNotFoundException("Exception while deleting users .");
+        }
 
-        return findAllUsers();
+        try {
+            return findAllUsers();
+        } catch (Exception e) {
+            throw new EntityNotFoundException("Exception while retrieving users.");
+        }
+
+
     }
 
 }

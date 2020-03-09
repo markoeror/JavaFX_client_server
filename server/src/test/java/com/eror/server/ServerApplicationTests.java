@@ -1,12 +1,13 @@
 package com.eror.server;
 
+import com.eror.server.dto.CompanyDTO;
 import com.eror.server.dto.RoleDTO;
 import com.eror.server.dto.UserDTO;
+import com.eror.server.mappers.CompanyMapper;
 import com.eror.server.mappers.RoleMapper;
-import com.eror.server.mappers.TestMapper;
 import com.eror.server.mappers.UserMapper;
-import com.eror.server.model.Role;
-import com.eror.server.model.User;
+import com.eror.server.model.Company;
+import com.eror.server.service.CompanyService;
 import com.eror.server.service.RoleService;
 import com.eror.server.service.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -14,9 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -30,12 +29,26 @@ class ServerApplicationTests {
     RoleMapper roleMapper;
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    CompanyService companyService;
+    @Autowired
+    CompanyMapper companyMapper;
 
     @Test
     void contextLoads() {
         getUser(1);
         getUsers();
         checkROle();
+        getCompanys();
+
+    }
+
+    private void getCompanys() {
+        List<CompanyDTO> companyListDTO = companyService.findAll();
+        Assertions.assertNotNull(companyListDTO);
+        assert companyListDTO.size() > 0;
+        List<Company> companies = companyMapper.listCompanyDTOtoListCompanys(companyListDTO);
+        assertEquals(companies.get(0).getCompanyName(), companyListDTO.get(0).getCompanyName());
 
     }
 

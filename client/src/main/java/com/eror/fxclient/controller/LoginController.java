@@ -52,8 +52,6 @@ public class LoginController implements Initializable {
         user.setPassword(getPassword());
 //        User dummyuserFromApi= getDummyUser();
         getTokenAuthorisation(getUsername(), getPassword());
-
-
     }
 
     private HttpHeaders createHeaders(String username, String password) {
@@ -76,22 +74,14 @@ public class LoginController implements Initializable {
             headers.setContentType(MediaType.APPLICATION_JSON);
 // set `accept` header
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
 // request body parameters
             Map<String, Object> map = new HashMap<>();
             map.put("username", username);
             map.put("password", password);
-// build the request
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
-// send POST request
             ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
-// check response
             if (response.getStatusCode() == HttpStatus.OK) {
                 System.out.println("Request Successful");
-                System.out.println(response.getBody());
-
-                // parsing JSON String from api
-
                 JsonParserFactory factory = JsonParserFactory.getInstance();
                 JSONParser parser = factory.newJsonParser();
                 Map jsonMap = parser.parseJson(Objects.requireNonNull(response.getBody()));
@@ -107,7 +97,8 @@ public class LoginController implements Initializable {
                 lblLogin.setText("Login Success.");
 
                 stageManager.setUser(jsonMap);
-                stageManager.switchScene(FxmlView.USER);
+//                stageManager.switchScene(FxmlView.USER);
+                stageManager.switchScene(FxmlView.MENU);
             } else {
                 System.out.println("Request Failed");
                 System.out.println(response.getStatusCode());
@@ -123,13 +114,11 @@ public class LoginController implements Initializable {
             if (is401) {
                 badLoginAlert("Pogresan username ili password!");
             }
-
             return null;
         }
     }
 
     private User getDummyUser() throws IOException {
-
         try {
             RestTemplate restTemplate = new RestTemplate();
 
@@ -163,7 +152,6 @@ public class LoginController implements Initializable {
     }
 
     private void badLoginAlert(String msg) {
-
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Error while logging in.");
         alert.setHeaderText(null);
